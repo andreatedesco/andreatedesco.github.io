@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <title>DecentralAds</title>
+    <link rel="shortcut icon" href="TemplateData/icon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+
+    <meta name="title" content="DecentralAds">
+    <meta name="description" content="DecentralAds"> <!-- todo -->
+    <meta name="keywords" content="DecentralAds, andreatedesco, ADS">
+    <meta name="author" content="Andrea Tedesco">
+    <meta name="robots" content="index, follow">
+    <meta name="image" content="https://www.tilesonchain.com/TemplateData/logo.png"> <!-- todo -->
+
+    <meta property="og:title" content="DecentralAds">
+    <meta property="og:description" content="DecentralAds"> <!-- todo -->
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://www.tilesonchain.com/TemplateData/logo.png"> <!-- todo -->
+    <meta property="og:image:secure_url" content="https://www.tilesonchain.com/TemplateData/logo.png"> <!-- todo -->
+    <meta property="og:url" content="https://tilesonchain.com/"> <!-- todo -->
+    <meta property="og:site_name" content="DecentralAds">
+    <meta property="og:article:author" content="Andrea Tedesco">
+    <meta property="og:article:tag" content="DecentralAds, andreatedesco, ADS">
+
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="DecentralAds"/>
+    <meta name="twitter:description" content="DecentralAds"/> <!-- todo -->
+    <meta name="twitter:image" content="https://www.tilesonchain.com/TemplateData/logo.png"/> <!-- todo -->
+    <meta name="twitter:image:secure_url" content="https://www.tilesonchain.com/TemplateData/logo.png"/> <!-- todo -->
+    <meta name="twitter:card" content="app"/>
+    <meta name="twitter:image:alt" content="DecentralAds"/>
+    <meta name="twitter:site" content="@decentralads"/>
+    <meta name="twitter:creator" content="@andreatedescoo"/>
+
+  </head>
+
+  <body>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+    </div>
+    <script>
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var warningBanner = document.querySelector("#unity-warning");
+
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/Ads-fuji.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/5838854ff1bc232c2443c8901834254e.data",
+        frameworkUrl: buildUrl + "/38cc250584c39ffc2b34c5bb5c56e2df.js",
+        codeUrl: buildUrl + "/abb20fb44ae31dadba8315aefa612995.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Ted",
+        productName: "DecentralAds",
+        productVersion: "0.0.1",
+        showBanner: unityShowBanner,
+      };
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        container.className = "unity-mobile";
+        canvas.className = "unity-mobile";
+
+        unityShowBanner('WebGL builds are not supported on mobile devices.');
+      }
+
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          progressBarFull.style.width = 100 + "%";
+	        nethereumUnityInstance = unityInstance;
+          loadingBar.style.display = "none";
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>
