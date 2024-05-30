@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <title>RaffleFi</title>
+    <link rel="shortcut icon" href="TemplateData/icon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+
+    <meta name="title" content="RaffleFi">
+    <meta name="description" content="RaffleFi">
+    <meta name="keywords" content="RaffleFi, andreatedesco">
+    <meta name="author" content="Andrea Tedesco">
+    <meta name="robots" content="index, follow">
+    <meta name="image" href="TemplateData/logo.png">
+
+    <meta property="og:title" content="RaffleFi">
+    <meta property="og:description" content="RaffleFi">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="RaffleFi">
+    <meta property="og:article:author" content="Andrea Tedesco">
+    <meta property="og:article:tag" content="RaffleFi, andreatedesco">
+    <meta property="og:image" content="TemplateData/logo.png">
+    <!-- <meta property="og:image:secure_url" content="TemplateData/logo.png">
+    <meta property="og:url" content="https://tilesonchain.com/"> -->
+
+    <!-- <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="RaffleFi"/>
+    <meta name="twitter:description" content="RaffleFi"/>
+    <meta name="twitter:image" content="https://www.tilesonchain.com/TemplateData/logo.png"/>
+    <meta name="twitter:image:secure_url" content="https://www.tilesonchain.com/TemplateData/logo.png"/>
+    <meta name="twitter:card" content="app"/>
+    <meta name="twitter:image:alt" content="RaffleFi"/>
+    <meta name="twitter:site" content="@RaffleFi"/>
+    <meta name="twitter:creator" content="@andreatedescoo"/> -->
+
+  </head>
+
+  <body>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+    </div>
+    <script>
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var warningBanner = document.querySelector("#unity-warning");
+
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/RaffleFi.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/1a9aeb835220ab92b364ad4071ee8d3a.data",
+        frameworkUrl: buildUrl + "/6b273dc9eb95497ec52e1d6225ede395.js",
+        codeUrl: buildUrl + "/c96eaf2f37d3453d4b8edd9f1e15e08b.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Ted",
+        productName: "RaffleFi",
+        productVersion: "0.0.1",
+        showBanner: unityShowBanner,
+      };
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        container.className = "unity-mobile";
+        canvas.className = "unity-mobile";
+
+        unityShowBanner('WebGL builds are not supported on mobile devices.');
+      }
+
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          progressBarFull.style.width = 100 + "%";
+	        nethereumUnityInstance = unityInstance;
+          loadingBar.style.display = "none";
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
+</html>
